@@ -191,7 +191,7 @@ spec:
         - containerPort: 80
         env:
         - name: TITLE
-          value: "Welcome to Azure Kubernetes Service (AKS) - IOTFORUS"
+          value: "Welcome to Azure Kubernetes Service (AKS) - SOMEINFO"
 ---
 apiVersion: v1
 kind: Service
@@ -228,7 +228,7 @@ spec:
         - containerPort: 80
         env:
         - name: TITLE
-          value: "AKS Ingress Demo - IOTFORUS"
+          value: "AKS Ingress Demo - SOMEINFO"
 ---
 apiVersion: v1
 kind: Service
