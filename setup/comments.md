@@ -317,7 +317,7 @@ kubectl get pods -n ingress-basic
 cm-acme-http-solver-hww9x 
 
 
-kubectl get certificate
+kubectl get certificate --namespace ingress-basic
 NAME
 tls-secret
 
