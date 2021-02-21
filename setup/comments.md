@@ -24,6 +24,15 @@ az login (abre o navegador)
 az group create --name LIVE --location eastus
 
 az group list
+```
+- Register provider : Microsoft.ContainerService
+```
+az provider register -n Microsoft.ContainerService
+az provider show -n Microsoft.ContainerService
+
+```
+- Creating
+```
 
 az aks create --resource-group LIVE --name LIVE-AKS --node-count 3 --enable-addons monitoring --generate-ssh-key
 
