@@ -295,10 +295,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - hello-world-ingress.MY_CUSTOM_DOMAIN
+    - hello-world-ingress.FQDNPUBLICIPID.eastus.cloudapp.azure.com
     secretName: tls-secret
   rules:
-  - host: hello-world-ingress.MY_CUSTOM_DOMAIN
+  - host: hello-world-ingress.FQDNPUBLICIPID.eastus.cloudapp.azure.com
     http:
       paths:
       - backend:
