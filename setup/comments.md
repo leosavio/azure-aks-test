@@ -86,22 +86,30 @@ kubectl get pods -n ingress-basic
 kubectl describe pods -n ingress-basic "name-pod" 
 ```
  
- ### DNS - Lets Encrypt
-
- kubectl get svc -n ingress-basic (services)
+### DNS - Lets Encrypt
+- Info services
+```
+kubectl get svc -n ingress-basic
+```
 
 ## pegar comando yaml < 1:09:01
 
 ## Creating variables
-
-kubectl get svc -n ingress-basic "name-services" (name command up - services - external ip)
-
-export IP="X.X.X.X"
-export DNSNAME="giropops-live"
+- Get info and set address (external-ip)
+```
+kubectl get svc -n ingress-basic nginx-ingress-ingress-nginx-controller 
+```
+- Set linux variables
+```
+export IP="52.142.16.3"
+export DNSNAME="leo-live"
 
 export PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
 
-echo ... test all
+echo $IP
+echo $DNSNAME
+echo $PUBLICIPID
+```
 
 az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME
 
