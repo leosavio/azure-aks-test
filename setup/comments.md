@@ -76,8 +76,12 @@ helm install nginx-ingress ingress-nginx/ingress-nginx \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux
 
-	
-kubectl get pods -n ingress-basic (info status restart and time)
-
-kubectl describe pods -n ingress-basic "name-pod" (name command up - info detail)
+```
+- info status restart and time
+```
+kubectl get pods -n ingress-basic
+```
+- Replace "name-pod" with name on previous command (up) - info detail
+```
+kubectl describe pods -n ingress-basic "name-pod" 
 ```
