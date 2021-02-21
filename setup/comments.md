@@ -85,3 +85,74 @@ kubectl get pods -n ingress-basic
 ```
 kubectl describe pods -n ingress-basic "name-pod" 
 ```
+ 
+ ### DNS - Lets Encrypt
+
+ kubectl get svc -n ingress-basic (services)
+
+## pegar comando yaml < 1:09:01
+
+## Creating variables
+
+kubectl get svc -n ingress-basic "name-services" (name command up - services - external ip)
+
+export IP="X.X.X.X"
+export DNSNAME="giropops-live"
+
+export PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
+
+echo ... test all
+
+az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME
+
+az network public-ip show --ids $PUBLICIPID --query "[dnsSettings.fqdn]" --output tsv
+
+
+## LEts encrypt
+
+kubectl label namespace ingress-basic cert-manager.io/disable-validation=true
+
+helm repo add jetstack https://charts.jetstack.io
+
+helm repo update
+
+```
+helm install cert-manager jetstack/cert-manager \
+  --namespace ingress-basic \
+  --version v0.16.1 \
+  --set installCRDs=true \
+  --set nodeSelector."kubernetes\.io/os"=linux \
+  --set webhook.nodeSelector."kubernetes\.io/os"=linux \
+  --set cainjector.nodeSelector."kubernetes\.io/os"=linux
+```
+
+## Creating cluster Issuer
+cluster-issuer.yaml:
+```
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: leosavio@leosavio.com
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+          podTemplate:
+            spec:
+              nodeSelector:
+                "kubernetes.io/os": linux
+```
+
+kubectl apply -f cluster-issuer.yaml
+
+kubectl get clusterissuers.cert-manager.io
+NAME            READY     AGE
+letsencrypt     True      33s
+
+kubectl describe clusterissuers.cert-manager.io (more details)
