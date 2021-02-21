@@ -251,3 +251,75 @@ kubectl get pods -n ingress-basic
 
 kubectl get svc -n ingress-basic
 ```
+
+## Creating ingress 
+- Access to hello world
+- hello-world-ingress.yaml:
+```
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hello-world-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - FQDNPUBLICIPID.eastus.cloudapp.azure.com
+    secretName: tls-secret
+  rules:
+  - host: FQDNPUBLICIPID.eastus.cloudapp.azure.com
+    http:
+      paths:
+      - backend:
+          serviceName: aks-helloworld-one
+          servicePort: 80
+        path: /hello-world-one(/|$)(.*)
+      - backend:
+          serviceName: aks-helloworld-two
+          servicePort: 80
+        path: /hello-world-two(/|$)(.*)
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hello-world-ingress-static
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - hello-world-ingress.MY_CUSTOM_DOMAIN
+    secretName: tls-secret
+  rules:
+  - host: hello-world-ingress.MY_CUSTOM_DOMAIN
+    http:
+      paths:
+      - backend:
+          serviceName: aks-helloworld-one
+          servicePort: 80
+        path: /static(/|$)(.*)
+
+
+kubectl apply -f hello-world-ingress.yaml --namespace ingress-basic
+```
+
+## verifiyng 
+```
+kubectl get pods -n ingress-basic
+...
+cm-acme-http-solver-hww9x 
+
+
+kubectl get certificate
+NAME
+tls-secret
+
+kubectl describe certificate -n ingress-basic tls-secret
+```
