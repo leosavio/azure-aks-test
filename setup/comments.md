@@ -10,6 +10,12 @@
 ```
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 ```
+
+- Mac Os Install:
+```
+brew update && brew install azure-cli
+```
+
 - Login and create:
 ```
 
