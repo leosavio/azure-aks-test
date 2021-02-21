@@ -6,8 +6,12 @@
 ### Create AKS cluster
 - https://docs.microsoft.com/en-us/azure/aks/ingress-tls
 
+- Ubuntu Install:
 ```
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+```
+- Login and create:
+```
 
 az login (abre o navegador)
 
