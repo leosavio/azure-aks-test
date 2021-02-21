@@ -110,21 +110,22 @@ echo $IP
 echo $DNSNAME
 echo $PUBLICIPID
 ```
-
+- Set DNS
+```
 az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME
 
 az network public-ip show --ids $PUBLICIPID --query "[dnsSettings.fqdn]" --output tsv
-
+```
 
 ## LEts encrypt
-
+- Prepare Lets encrypt
+```
 kubectl label namespace ingress-basic cert-manager.io/disable-validation=true
 
 helm repo add jetstack https://charts.jetstack.io
 
 helm repo update
 
-```
 helm install cert-manager jetstack/cert-manager \
   --namespace ingress-basic \
   --version v0.16.1 \
@@ -155,7 +156,7 @@ spec:
             spec:
               nodeSelector:
                 "kubernetes.io/os": linux
-```
+
 
 kubectl apply -f cluster-issuer.yaml
 
@@ -163,4 +164,90 @@ kubectl get clusterissuers.cert-manager.io
 NAME            READY     AGE
 letsencrypt     True      33s
 
-kubectl describe clusterissuers.cert-manager.io (more details)
+kubectl describe clusterissuers.cert-manager.io
+```
+
+## Creating hello world deployment
+- aks-helloworld-one.yaml:
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld-one
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld-one
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld-one
+    spec:
+      containers:
+      - name: aks-helloworld-one
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Welcome to Azure Kubernetes Service (AKS) - IOTFORUS"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld-one
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-helloworld-one
+``` 
+
+ aks-helloworld-two.yaml:
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld-two
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld-two
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld-two
+    spec:
+      containers:
+      - name: aks-helloworld-two
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "AKS Ingress Demo - IOTFORUS"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld-two
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: aks-helloworld-two
+```
+
+kubectl apply -f aks-helloworld-one.yaml --namespace ingress-basic
+kubectl apply -f aks-helloworld-two.yaml --namespace ingress-basic
+
+### Verifying
+```
+kubectl get pods -n ingress-basic
+
+kubectl get svc -n ingress-basic
+```
