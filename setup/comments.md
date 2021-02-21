@@ -101,8 +101,8 @@ kubectl get svc -n ingress-basic nginx-ingress-ingress-nginx-controller
 ```
 - Set linux variables
 ```
-export IP="52.142.16.3"
-export DNSNAME="leo-live"
+export IP="X.Y.Z.K"
+export DNSNAME="NAME-live"
 
 export PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
 
